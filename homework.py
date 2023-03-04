@@ -14,6 +14,7 @@ class InfoMessage:
         self.calories = calories
 
     def get_message(self) -> str:
+        """Вывести информационное сообщение на экран."""
         return (f'Тип тренировки: {self.training_type}; '
                 f'Длительность: {self.duration:.3f} ч.; '
                 f'Дистанция: {self.distance:.3f} км; '
@@ -64,6 +65,7 @@ class Running(Training):
     CALORIES_MEAN_SPEED_SHIFT: float = 1.79
 
     def get_spent_calories(self) -> float:
+        """Получить количество затраченных калорий при беге."""
         return ((self.CALORIES_MEAN_SPEED_MULTIPLIER * self.get_mean_speed()
                 + self.CALORIES_MEAN_SPEED_SHIFT)
                 * self.weight / self.M_IN_KM * (self.duration * self.MIN_IN_H))
@@ -86,9 +88,10 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
+        """Получить количество затраченных калорий при ходьбе."""
         return ((self.CALORIES_WEIGHT_MULTIPLIER * self.weight
                 + ((self.get_mean_speed() * self.KMH_IN_MS)**2
-                   / (self.height / 100))
+                   / (self.height / self.CM_IN_M))
                 * self.CALORIES_MEAN_SPEED_AND_HEIGHT_MULTIPLIER * self.weight)
                 * (self.duration * self.MIN_IN_H))
 
@@ -103,7 +106,7 @@ class Swimming(Training):
                  action,
                  duration,
                  weight,
-                 length_pool: int,
+                 length_pool: float,
                  count_pool: int
                  ) -> None:
         super().__init__(action, duration, weight)
@@ -111,10 +114,12 @@ class Swimming(Training):
         self.count_pool = count_pool
 
     def get_mean_speed(self) -> float:
+        """Получить среднюю скорость во время плавания."""
         return (self.length_pool * self.count_pool
                 / self.M_IN_KM / self.duration)
 
     def get_spent_calories(self) -> float:
+        """Получить количество затраченных калорий во время плавания."""
         return ((self.get_mean_speed() + self.CALORIES_MEAN_SPEED_SHIFT)
                 * self.CALORIES_MULTIPLIER * self.weight * self.duration)
 
@@ -141,7 +146,7 @@ def main(training: Training) -> None:
 
 if __name__ == '__main__':
     packages: list[tuple[str, list]] = [
-        ('SW', [720, 1, 80, 25, 40]),
+        ('SWM', [720, 1, 80, 25, 40]),
         ('RUN', [15000, 1, 75]),
         ('WLK', [9000, 1, 75, 180]),
     ]
